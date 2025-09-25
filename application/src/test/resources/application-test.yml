@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: java-trainer-test
+
+# Test configuration
+aws:
+  region: us-east-1
+  sqs:
+    health-queue-url: http://localhost:4566/000000000000/test-health-queue
+    notification-queue-url: http://localhost:4566/000000000000/test-notification-queue
+
+openai:
+  api:
+    key: test-api-key
+    base-url: http://localhost:8888
+
+app:
+  scheduler:
+    enabled: false
+
+logging:
+  level:
+    com.opentrainer: DEBUG
