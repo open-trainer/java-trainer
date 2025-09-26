@@ -29,7 +29,7 @@ The application follows a modular architecture with clear separation of concerns
 ### Prerequisites
 
 - Java 17 or higher
-- Maven 3.9+
+- Gradle 8.5+ (or use included wrapper)
 - Docker and Docker Compose
 - AWS CLI (for production deployment)
 - OpenAI API key
@@ -66,7 +66,7 @@ curl http://localhost:8080/actuator/health
 
 1. Install dependencies:
 ```bash
-mvn clean install
+./gradlew build
 ```
 
 2. Start LocalStack separately:
@@ -79,26 +79,24 @@ docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack
 export OPENAI_API_KEY=your-openai-api-key-here
 export AWS_SQS_HEALTH_QUEUE_URL=http://localhost:4566/000000000000/health-queue
 export AWS_SQS_NOTIFICATION_QUEUE_URL=http://localhost:4566/000000000000/notification-queue
-cd application
-mvn spring-boot:run
+./gradlew :application:bootRun
 ```
 
 ## Testing
 
 ### Run all tests:
 ```bash
-mvn clean test
+./gradlew test
 ```
 
 ### Run tests for specific module:
 ```bash
-cd sqs-consumer
-mvn test
+./gradlew :sqs-consumer:test
 ```
 
 ### Integration tests:
 ```bash
-mvn clean verify
+./gradlew integrationTest
 ```
 
 ## Monitoring

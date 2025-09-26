@@ -1,19 +1,20 @@
 # Multi-stage Docker build
-FROM maven:3.9.5-eclipse-temurin-17 AS builder
+FROM gradle:8.5-jdk17 AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy pom files for dependency resolution
-COPY pom.xml .
-COPY sqs-consumer/pom.xml sqs-consumer/
-COPY openai-client/pom.xml openai-client/
-COPY dynamodb/pom.xml dynamodb/
-COPY notifier/pom.xml notifier/
-COPY application/pom.xml application/
+# Copy Gradle files for dependency caching
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle gradle
+COPY sqs-consumer/build.gradle sqs-consumer/
+COPY openai-client/build.gradle openai-client/
+COPY dynamodb/build.gradle dynamodb/
+COPY notifier/build.gradle notifier/
+COPY application/build.gradle application/
 
 # Download dependencies
-RUN mvn dependency:go-offline -B
+RUN ./gradlew dependencies --no-daemon
 
 # Copy source code
 COPY sqs-consumer/src sqs-consumer/src
@@ -23,7 +24,7 @@ COPY notifier/src notifier/src
 COPY application/src application/src
 
 # Build application
-RUN mvn clean package -DskipTests
+RUN ./gradlew clean bootJar --no-daemon
 
 # Runtime stage
 FROM eclipse-temurin:17-jre-alpine
@@ -37,8 +38,8 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 # Install required packages
 RUN apk add --no-cache curl
 
-# Copy application JAR
-COPY --from=builder /app/application/target/application-1.0.0.jar app.jar
+# Copy application JAR from Gradle build
+COPY --from=builder /app/application/build/libs/application-1.0.0.jar app.jar
 
 # Change ownership
 RUN chown -R appuser:appuser /app

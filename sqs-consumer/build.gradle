@@ -1,0 +1,19 @@
+description = 'Module for consuming health messages from Amazon SQS'
+
+dependencies {
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // AWS SQS
+    implementation 'software.amazon.awssdk:sqs'
+
+    // JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Logging
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:localstack'
+}

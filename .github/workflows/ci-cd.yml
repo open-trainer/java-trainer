@@ -27,22 +27,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
       with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+        gradle-version: '8.5'
         
     - name: Run tests
-      run: mvn clean test -B
+      run: ./gradlew test
       
     - name: Generate test report
       uses: dorny/test-reporter@v1
       if: success() || failure()
       with:
-        name: Maven Tests
-        path: '**/target/surefire-reports/*.xml'
+        name: Gradle Tests
+        path: '**/build/test-results/test/*.xml'
         reporter: java-junit
 
   build:
@@ -61,15 +59,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
       with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+        gradle-version: '8.5'
         
     - name: Build application
-      run: mvn clean package -DskipTests -B
+      run: ./gradlew clean bootJar
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4

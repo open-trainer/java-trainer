@@ -7,6 +7,7 @@ This guide covers deploying the Java Trainer application to various environments
 - AWS CLI configured with appropriate credentials
 - Docker installed
 - kubectl configured (for Kubernetes deployment)
+- Gradle 8.5+ (or use included wrapper)
 
 ## Local Development
 
