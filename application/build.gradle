@@ -1,0 +1,27 @@
+description = 'Main application module'
+
+dependencies {
+    // Internal modules
+    implementation project(':sqs-consumer')
+    implementation project(':openai-client')
+    implementation project(':dynamodb')
+    implementation project(':notifier')
+
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // JSON processing (needed for TrainingPlanOrchestrator)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
+    // Reactive streams (needed for Mono)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+}
+
+bootJar {
+    mainClass = 'com.opentrainer.application.JavaTrainerApplication'
+}

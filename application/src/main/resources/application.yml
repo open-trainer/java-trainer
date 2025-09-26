@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: java-trainer
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+# AWS Configuration
+aws:
+  region: ${AWS_REGION:us-east-1}
+  sqs:
+    health-queue-url: ${AWS_SQS_HEALTH_QUEUE_URL:}
+    notification-queue-url: ${AWS_SQS_NOTIFICATION_QUEUE_URL:}
+
+# OpenAI Configuration
+openai:
+  api:
+    key: ${OPENAI_API_KEY:}
+    base-url: ${OPENAI_API_BASE_URL:https://api.openai.com/v1}
+
+# Application Configuration
+app:
+  scheduler:
+    enabled: ${APP_SCHEDULER_ENABLED:true}
+    sqs:
+      poll-interval: ${APP_SQS_POLL_INTERVAL:30000}
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    com.opentrainer: ${LOG_LEVEL:INFO}
+    software.amazon.awssdk: WARN
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+# Local development profile
+spring:
+  config:
+    activate:
+      on-profile: local
+
+aws:
+  sqs:
+    health-queue-url: http://localhost:4566/000000000000/health-queue
+    notification-queue-url: http://localhost:4566/000000000000/notification-queue
+
+# For local development with LocalStack
+server:
+  port: 8080
+
+---
+# Production profile
+spring:
+  config:
+    activate:
+      on-profile: production
+
+logging:
+  level:
+    root: WARN
+    com.opentrainer: INFO
